@@ -56,6 +56,7 @@ public class EncodedImage implements RefCounted {
   public final int rotation;
   public final boolean completeFrame;
   public final @Nullable Integer qp;
+  public final @Nullable Integer spatialIndex;
 
   // TODO(bugs.webrtc.org/9378): Use retain and release from jni code.
   @Override
@@ -71,7 +72,7 @@ public class EncodedImage implements RefCounted {
   @CalledByNative
   private EncodedImage(ByteBuffer buffer, @Nullable Runnable releaseCallback, int encodedWidth,
       int encodedHeight, long captureTimeNs, FrameType frameType, int rotation,
-      boolean completeFrame, @Nullable Integer qp) {
+      boolean completeFrame, @Nullable Integer qp, @Nullable Integer spatialIndex) {
     this.buffer = buffer;
     this.encodedWidth = encodedWidth;
     this.encodedHeight = encodedHeight;
@@ -82,6 +83,7 @@ public class EncodedImage implements RefCounted {
     this.completeFrame = completeFrame;
     this.qp = qp;
     this.refCountDelegate = new RefCountDelegate(releaseCallback);
+    this.spatialIndex = spatialIndex;
   }
 
   @CalledByNative
@@ -124,6 +126,11 @@ public class EncodedImage implements RefCounted {
     return qp;
   }
 
+  @CalledByNative
+  private @Nullable Integer getSpatialIndex() {
+    return spatialIndex;
+  }
+
   public static Builder builder() {
     return new Builder();
   }
@@ -138,6 +145,7 @@ public class EncodedImage implements RefCounted {
     private int rotation;
     private boolean completeFrame;
     private @Nullable Integer qp;
+    private @Nullable Integer spatialIndex;
 
     private Builder() {}
 
@@ -188,9 +196,14 @@ public class EncodedImage implements RefCounted {
       return this;
     }
 
+    public Builder setSpatialIndex(@Nullable Integer spatialIndex) {
+      this.spatialIndex = spatialIndex;
+      return this;
+    }
+
     public EncodedImage createEncodedImage() {
       return new EncodedImage(buffer, releaseCallback, encodedWidth, encodedHeight, captureTimeNs,
-          frameType, rotation, completeFrame, qp);
+          frameType, rotation, completeFrame, qp, spatialIndex);
     }
   }
 }

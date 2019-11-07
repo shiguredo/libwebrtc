@@ -62,6 +62,8 @@ ScopedJavaLocalRef<jobject> NativeToJavaEncodedImage(
   ScopedJavaLocalRef<jobject> qp;
   if (image.qp_ != -1)
     qp = NativeToJavaInteger(jni, image.qp_);
+  ScopedJavaLocalRef<jobject> spatial_index =
+      NativeToJavaInteger(jni, image.SpatialIndex());
   // TODO(bugs.webrtc.org/9378): Keep a reference to the C++ EncodedImage data,
   // and use the releaseCallback to manage lifetime.
   return Java_EncodedImage_Constructor(
@@ -70,7 +72,8 @@ ScopedJavaLocalRef<jobject> NativeToJavaEncodedImage(
       static_cast<int>(image._encodedWidth),
       static_cast<int>(image._encodedHeight),
       image.capture_time_ms_ * rtc::kNumNanosecsPerMillisec, frame_type,
-      static_cast<jint>(image.rotation_), image._completeFrame, qp);
+      static_cast<jint>(image.rotation_), image._completeFrame, qp,
+      spatial_index);
 }
 
 ScopedJavaLocalRef<jobjectArray> NativeToJavaFrameTypeArray(
@@ -107,6 +110,9 @@ EncodedImage JavaToNativeEncodedImage(JNIEnv* env,
 
   frame._frameType =
       (VideoFrameType)Java_EncodedImage_getFrameType(env, j_encoded_image);
+
+  frame.SetSpatialIndex(JavaToNativeOptionalInt(
+      env, Java_EncodedImage_getSpatialIndex(env, j_encoded_image)));
   return frame;
 }
 

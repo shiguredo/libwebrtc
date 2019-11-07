@@ -25,6 +25,7 @@
 #include "sdk/android/native_api/jni/class_loader.h"
 #include "sdk/android/native_api/jni/java_types.h"
 #include "sdk/android/src/jni/encoded_image.h"
+#include "sdk/android/src/jni/simulcast_stream.h"
 #include "sdk/android/src/jni/video_codec_status.h"
 
 namespace webrtc {
@@ -73,11 +74,15 @@ int32_t VideoEncoderWrapper::InitEncodeInternal(JNIEnv* jni) {
   ScopedJavaLocalRef<jobject> capabilities =
       Java_Capabilities_Constructor(jni, capabilities_->loss_notification);
 
+  ScopedJavaLocalRef<jobject> simulcastStreams =
+      NativeToJavaList(jni, codec_settings_.simulcastStream, &NativeToJavaSimulcastStream);
+
   ScopedJavaLocalRef<jobject> settings = Java_Settings_Constructor(
       jni, number_of_cores_, codec_settings_.width, codec_settings_.height,
       static_cast<int>(codec_settings_.startBitrate),
       static_cast<int>(codec_settings_.maxFramerate),
       static_cast<int>(codec_settings_.numberOfSimulcastStreams),
+      simulcastStreams,
       automatic_resize_on, capabilities);
 
   ScopedJavaLocalRef<jobject> callback =

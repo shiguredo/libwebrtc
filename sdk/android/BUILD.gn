@@ -194,6 +194,7 @@ if (is_android) {
   rtc_android_library("video_api_java") {
     visibility = [ "*" ]
     sources = [
+      "api/org/webrtc/SimulcastStream.java",
       "api/org/webrtc/CapturerObserver.java",
       "api/org/webrtc/EncodedImage.java",
       "api/org/webrtc/VideoCodecInfo.java",
@@ -635,6 +636,8 @@ if (current_os == "linux" || is_android) {
     sources = [
       "src/jni/android_video_track_source.cc",
       "src/jni/android_video_track_source.h",
+      "src/jni/simulcast_stream.cc",
+      "src/jni/simulcast_stream.h",
       "src/jni/encoded_image.cc",
       "src/jni/encoded_image.h",
       "src/jni/h264_utils.cc",
@@ -1199,6 +1202,7 @@ if (current_os == "linux" || is_android) {
 
   generate_jni("generated_video_jni") {
     sources = [
+      "api/org/webrtc/SimulcastStream.java",
       "api/org/webrtc/EncodedImage.java",
       "api/org/webrtc/JavaI420Buffer.java",
       "api/org/webrtc/MediaCodecVideoDecoder.java",

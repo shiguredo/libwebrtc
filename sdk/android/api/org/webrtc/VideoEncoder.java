@@ -11,6 +11,8 @@
 package org.webrtc;
 
 import android.support.annotation.Nullable;
+import java.util.List;
+import java.util.ArrayList;
 import org.webrtc.EncodedImage;
 
 /**
@@ -27,6 +29,7 @@ public interface VideoEncoder {
     public final int startBitrate; // Kilobits per second.
     public final int maxFramerate;
     public final int numberOfSimulcastStreams;
+    public final List<SimulcastStream> simulcastStreams;
     public final boolean automaticResizeOn;
     public final Capabilities capabilities;
 
@@ -35,18 +38,21 @@ public interface VideoEncoder {
     public Settings(int numberOfCores, int width, int height, int startBitrate, int maxFramerate,
         int numberOfSimulcastStreams, boolean automaticResizeOn) {
       this(numberOfCores, width, height, startBitrate, maxFramerate, numberOfSimulcastStreams,
-          automaticResizeOn, new VideoEncoder.Capabilities(false /* lossNotification */));
+          new ArrayList<SimulcastStream>(), automaticResizeOn,
+          new VideoEncoder.Capabilities(false /* lossNotification */));
     }
 
     @CalledByNative("Settings")
     public Settings(int numberOfCores, int width, int height, int startBitrate, int maxFramerate,
-        int numberOfSimulcastStreams, boolean automaticResizeOn, Capabilities capabilities) {
+        int numberOfSimulcastStreams, List<SimulcastStream> simulcastStreams,
+        boolean automaticResizeOn, Capabilities capabilities) {
       this.numberOfCores = numberOfCores;
       this.width = width;
       this.height = height;
       this.startBitrate = startBitrate;
       this.maxFramerate = maxFramerate;
       this.numberOfSimulcastStreams = numberOfSimulcastStreams;
+      this.simulcastStreams = simulcastStreams;
       this.automaticResizeOn = automaticResizeOn;
       this.capabilities = capabilities;
     }
