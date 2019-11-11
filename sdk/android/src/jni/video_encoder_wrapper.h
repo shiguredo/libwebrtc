@@ -83,7 +83,7 @@ class VideoEncoderWrapper : public VideoEncoder {
   const ScopedJavaGlobalRef<jobject> encoder_;
   const ScopedJavaGlobalRef<jclass> int_array_class_;
 
-  std::deque<FrameExtraInfo> frame_extra_infos_;
+  std::array<std::deque<FrameExtraInfo>, kMaxSimulcastStreams> frame_extra_infos_array_;
   EncodedImageCallback* callback_;
   bool initialized_;
   int num_resets_;
